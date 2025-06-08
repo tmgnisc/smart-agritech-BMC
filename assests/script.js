@@ -65,3 +65,9 @@ const soilMoistureChart = new Chart(soilMoistureCtx, {
         }
     }
 });
+  
+    function toggleProperties() {
+      const section = document.getElementById("propertySection");
+      section.classList.toggle("hidden");
+    }
+ 
