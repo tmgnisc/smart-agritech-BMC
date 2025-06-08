@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Smart AgriTech - Municipality Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-100">
+    <div class="flex h-screen">
+        
+        <div class="w-64 bg-green-800 text-white">
+            <div class="p-4">
+                   <h1 class="text-2xl font-bold">Smart AgriTech</h1>
+                <p class="text-sm text-green-200">Municipality Portal</p>
+            </div>
+            <nav class="mt-4 w-full">
+                <a href="municipality-dashboard.html" class="block py-2.5 px-4 rounded transition duration-200 bg-green-700">
+                    <i class="fas fa-chart-line mr-2"></i>Dashboard
+                </a>
+                <a href="add-device-farmer.html" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-green-700">
+                    <i class="fas fa-plus mr-2"></i>Add Device/Farmer
+                </a>
+                <a href="view-farmers.html" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-green-700">
+                    <i class="fas fa-users mr-2"></i>View Farmers
+                </a>
+                <a href="all-notification.html" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-green-700">
+                    <i class="fas fa-bell mr-2"></i>Notifications
+                </a>
+                <a href="Submit-Feedback.html" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-green-700">
+                    <i class="fas fa-comment-alt mr-2"></i>Feedback
+                </a>
+              
+            </nav>
+        </div>
+
+        
+        <div class="flex-1 overflow-auto">
+            <header class="bg-white shadow">
+                <div class="px-4 py-6">
+                    <h2 class="text-xl font-semibold text-gray-800">Municipality Dashboard</h2>
+                </div>
+            </header>
+
+            <main class="p-6">
+            
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+                    <div class="bg-white rounded-lg shadow p-6 flex flex-col items-center">
+                        <div class="text-3xl font-bold text-green-700">120</div>
+                        <div class="text-gray-600 mt-2">Total Farmers</div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow p-6 flex flex-col items-center">
+                        <div class="text-3xl font-bold text-green-700">45</div>
+                        <div class="text-gray-600 mt-2">Active Devices</div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow p-6 flex flex-col items-center">
+                        <div class="text-3xl font-bold text-green-700">15</div>
+                        <div class="text-gray-600 mt-2">Irrigation Systems</div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow p-6 flex flex-col items-center">
+                        <div class="text-3xl font-bold text-red-600">3</div>
+                        <div class="text-gray-600 mt-2">Active Issues</div>
+                    </div>
+                </div>
+
+          
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <h3 class="text-lg font-semibold mb-4">Sensor Data Trends</h3>
+                        <canvas id="sensorTrendsChart" height="120"></canvas>
+                    </div>
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <h3 class="text-lg font-semibold mb-4">Device Distribution</h3>
+                        <canvas id="deviceDistributionChart" height="120"></canvas>
+                    </div>
+                </div>
+
+           
+                <div class="bg-white rounded-lg shadow p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-semibold">Recent Activity</h3>
+                        <a href="activity-log.html" class="text-green-700 hover:underline">View All Activity</a>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead>
+                                <tr>
+                                    <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Timestamp</th>
+                                    <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
+                                    <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Details</th>
+                                    <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">2024-06-01 10:15</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Device Added</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Soil Moisture Sensor (DEV001) assigned to John Doe</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Success</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">2024-06-01 09:50</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Issue Reported</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Low battery on Weather Station (DEV005)</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Critical</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">2024-06-01 09:30</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Farmer Added</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Jane Smith registered (FARM124)</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Success</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        const ctx1 = document.getElementById('sensorTrendsChart').getContext('2d');
+        new Chart(ctx1, {
+            type: 'line',
+            data: {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                datasets: [
+                    {
+                        label: 'Soil Moisture',
+                        data: [65, 59, 80, 81, 56, 55, 40],
+                        borderColor: 'rgba(16, 185, 129, 1)',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    },
+                    {
+                        label: 'Temperature',
+                        data: [22, 21, 23, 24, 22, 20, 19],
+                        borderColor: 'rgba(59, 130, 246, 1)',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'top' }
+                }
+            }
+        });
+
+       
+        const ctx2 = document.getElementById('deviceDistributionChart').getContext('2d');
+        new Chart(ctx2, {
+            type: 'doughnut',
+            data: {
+                labels: ['Soil Moisture', 'Weather Station', 'Irrigation', 'Other'],
+                datasets: [
+                    {
+                        data: [20, 10, 8, 7],
+                        backgroundColor: [
+                            'rgba(16, 185, 129, 0.8)',
+                            'rgba(59, 130, 246, 0.8)',
+                            'rgba(245, 158, 11, 0.8)',
+                            'rgba(107, 114, 128, 0.8)'
+                        ],
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'bottom' }
+                }
+            }
+        });
+    </script>
+</body>
+</html> 
