@@ -1,10 +1,6 @@
 package com.example.demo.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Column;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
@@ -13,14 +9,22 @@ public class Notification {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String email; // Farmer's email
-    private String type; // ANNOUNCEMENT or ALERT
-    private String title;
-    private String message;
-    private LocalDateTime timestamp;
+    private String email; // Associated farmer's email
 
-    @Column(name = "is_read", columnDefinition = "TINYINT(1) DEFAULT 0")
-    private boolean isRead;
+    private String title; // Notification title
+
+    private String message; // Notification content
+
+    private LocalDateTime timestamp; // When notification was created
+
+    private boolean isRead; // Read status
+
+    @Enumerated(EnumType.STRING)
+    private NotificationType type; // MUNICIPALITY or SENSOR
+
+    public enum NotificationType {
+        MUNICIPALITY, SENSOR
+    }
 
     // Getters and Setters
     public Long getId() {
@@ -37,14 +41,6 @@ public class Notification {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     public String getTitle() {
@@ -77,5 +73,13 @@ public class Notification {
 
     public void setRead(boolean isRead) {
         this.isRead = isRead;
+    }
+
+    public NotificationType getType() {
+        return type;
+    }
+
+    public void setType(NotificationType type) {
+        this.type = type;
     }
 }

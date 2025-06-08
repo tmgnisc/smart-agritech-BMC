@@ -12,7 +12,7 @@
         <div class="w-64 bg-green-800 text-white">
             <div class="p-4">
                 <h1 class="text-2xl font-bold">Smart AgriTech</h1>
-                <p class="text-sm text-green-200" th:text="${profile.username} + ' Dashboard'">Farmer Dashboard</p>
+                <p class="text-sm text-green-200" th:text="${profile != null && profile.username != null} ? ${profile.username} + ' Dashboard' : 'Farmer Dashboard'">Farmer Dashboard</p>
             </div>
             <nav class="mt-8">
                 <a th:href="@{/farmer-dashboard}" th:classappend="${activePage == 'dashboard' ? 'bg-green-700' : ''}" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-green-700">
@@ -42,95 +42,82 @@
                 </div>
             </header>
             <main class="p-6">
-                <div class="mb-8">
+                <!-- Municipality Announcements -->
+                <div class="mb-8" th:if="${not #lists.isEmpty(municipalityNotifications)}">
                     <h3 class="text-lg font-semibold text-gray-800 mb-4">Municipality Announcements</h3>
                     <div class="space-y-4">
-                        <div class="notification bg-white rounded-lg shadow p-4 border-l-4 border-green-500 transition-all duration-300">
+                        <div th:each="notification : ${municipalityNotifications}"
+                             th:classappend="${notification.isRead} ? 'opacity-50' : ''"
+                             class="notification bg-white rounded-lg shadow p-4 border-l-4 border-blue-500">
                             <div class="flex items-start">
                                 <div class="flex-shrink-0">
-                                    <i class="fas fa-seedling text-green-500 text-xl"></i>
+                                    <i th:class="'fas ' + (${notification.isRead} ? 'fa-check-circle' : 'fa-seedling') + ' text-green-500 text-xl'"></i>
                                 </div>
                                 <div class="ml-4 flex-1">
-                                    <h4 class="text-lg font-medium text-gray-900">Free Seed Distribution</h4>
-                                    <p class="mt-1 text-gray-600">The municipality will distribute free high-yield wheat seeds on March 15, 2024. Please bring your farmer ID card.</p>
-                                    <p class="mt-2 text-sm text-gray-500">Posted: 2 hours ago</p>
+                                    <h4 class="text-lg font-medium text-gray-900" th:text="${notification.title}">Title</h4>
+                                    <p class="mt-1 text-gray-600 text-sm" th:text="${notification.message}">Message</p>
+                                    <p class="mt-2 text-sm text-gray-500" th:text="'Posted: ' + ${#temporals.format(notification.timestamp, 'MMM dd, yyyy HH:mm:ss')}"></p>
                                 </div>
-                                <button class="mark-read ml-4 bg-green-500 hover:bg-green-600 text-white text-sm px-3 py-1 rounded">Mark as Read</button>
-                            </div>
-                        </div>
-                        <div class="notification bg-white rounded-lg shadow p-4 border-l-4 border-blue-500 transition-all duration-300">
-                            <div class="flex items-start">
-                                <div class="flex-shrink-0">
-                                    <i class="fas fa-flask text-blue-500 text-xl"></i>
-                                </div>
-                                <div class="ml-4 flex-1">
-                                    <h4 class="text-lg font-medium text-gray-900">Fertilizer Subsidy Program</h4>
-                                    <p class="mt-1 text-gray-600">Special subsidy on organic fertilizers available until March 30, 2024. Limited stock available.</p>
-                                    <p class="mt-2 text-sm text-gray-500">Posted: 1 day ago</p>
-                                </div>
-                                <button class="mark-read ml-4 bg-green-500 hover:bg-green-600 text-white text-sm px-3 py-1 rounded">Mark as Read</button>
+                                <form th:action="@{/farmer-notifications/{id}/mark-read(id=${notification.id})}" method="post" th:if="${!notification.isRead}">
+                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" th:if="${_csrf != null}"/>
+                                    <button type="submit" class="mark-read ml-4 px-3 py-1 rounded text-sm font-medium text-white bg-green-500 hover:bg-green-600"
+                                            th:classappend="${notification.isRead} ? 'bg-gray-300 cursor-not-allowed' : 'bg-green-500 hover:bg-green-600'}"
+                                            th:disabled="${notification.isRead}"
+                                            th:text="${notification.isRead} ? 'Read' : 'Mark as Read'}">
+                                    </button>
+                                </form>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div>
+                <div class="mb-8" th:if="${#lists.isEmpty(municipalityNotifications)}">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Municipality Announcements</h3>
+                    <div class="text-center text-gray-600">
+                        <p>No municipality announcements.</p>
+                    </div>
+                </div>
+                <!-- Sensor Alerts -->
+                <div th:if="${not #lists.isEmpty(sensorNotifications)}">
                     <h3 class="text-lg font-semibold text-gray-800 mb-4">Sensor Alerts</h3>
                     <div class="space-y-4">
-                        <div class="notification bg-white rounded-lg shadow p-4 border-l-4 border-yellow-500 transition-all duration-300">
+                        <div th:each="notification : ${sensorNotifications}"
+                             th:classappend="${notification.isRead} ? 'opacity-50' : ''"
+                             class="notification bg-white rounded-lg shadow p-4 border-l-4"
+                             th:classappend="${notification.title.contains('Warning') ? 'border-red-500' : notification.title.contains('Alert') ? 'border-yellow-500' : 'border-purple-600'}">
                             <div class="flex items-start">
                                 <div class="flex-shrink-0">
-                                    <i class="fas fa-exclamation-triangle text-yellow-500 text-xl"></i>
+                                    <i th:class="'fas ' + (${notification.title.contains('Warning') ? 'fa-temperature-high text-red-500' : notification.title.contains('Alert') ? 'fa-exclamation-triangle text-yellow-500' : 'fa-vial text-purple-600'}) + ' text-xl'"></i>
                                 </div>
                                 <div class="ml-4 flex-1">
-                                    <h4 class="text-lg font-medium text-gray-900">Low Soil Moisture Alert</h4>
-                                    <p class="mt-1 text-gray-600">Soil moisture level has dropped below 30%. Consider irrigation soon.</p>
-                                    <p class="mt-2 text-sm text-gray-500">Alert: 30 minutes ago</p>
+                                    <h4 class="text-lg font-medium text-gray-900" th:text="${notification.title}">Title</h4>
+                                    <p class="mt-1 text-gray-600 text-sm" th:text="${notification.message}">Message</p>
+                                    <p class="mt-2 text-sm text-gray-500" th:text="'Alert: ' + ${#temporals.format(notification.timestamp, 'MMM dd, yyyy HH:mm:ss')}"></p>
                                 </div>
-                                <button class="mark-read ml-4 bg-green-500 hover:bg-green-600 text-white text-sm px-3 py-1 rounded">Mark as Read</button>
-                            </div>
-                        </div>
-                        <div class="notification bg-white rounded-lg shadow p-4 border-l-4 border-red-500 transition-all duration-300">
-                            <div class="flex items-start">
-                                <div class="flex-shrink-0">
-                                    <i class="fas fa-temperature-high text-red-500 text-xl"></i>
-                                </div>
-                                <div class="ml-4 flex-1">
-                                    <h4 class="text-lg font-medium text-gray-900">High Temperature Warning</h4>
-                                    <p class="mt-1 text-gray-600">Temperature has exceeded 35°C. Take necessary precautions for your crops.</p>
-                                    <p class="mt-2 text-sm text-gray-500">Alert: 1 hour ago</p>
-                                </div>
-                                <button class="mark-read ml-4 bg-green-500 hover:bg-green-600 text-white text-sm px-3 py-1 rounded">Mark as Read</button>
-                            </div>
-                        </div>
-                        <div class="notification bg-white rounded-lg shadow p-4 border-l-4 border-purple-500 transition-all duration-300">
-                            <div class="flex items-start">
-                                <div class="flex-shrink-0">
-                                    <i class="fas fa-vial text-purple-500 text-xl"></i>
-                                </div>
-                                <div class="ml-4 flex-1">
-                                    <h4 class="text-lg font-medium text-gray-900">Soil Quality Report</h4>
-                                    <p class="mt-1 text-gray-600">Latest soil analysis shows optimal pH levels (6.5) and good nutrient content.</p>
-                                    <p class="mt-2 text-sm text-gray-500">Report: 2 days ago</p>
-                                </div>
-                                <button class="mark-read ml-4 bg-green-500 hover:bg-green-600 text-white text-sm px-3 py-1 rounded">Mark as Read</button>
+                                <form th:action="@{/farmer-notifications/{id}/mark-read(id=${notification.id})}" method="post" th:if="${!notification.isRead}">
+                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" th:if="${_csrf != null}"/>
+                                    <button type="submit" class="mark-read ml-4 px-3 py-1 rounded text-sm font-medium text-white bg-green-500 hover:bg-green-600"
+                                            th:classappend="${notification.isRead} ? 'bg-gray-300 cursor-not-allowed' : 'bg-green-500 hover:bg-green-600'}"
+                                            th:disabled="${notification.isRead}"
+                                            th:text="${notification.isRead} ? 'Read' : 'Mark as Read'}">
+                                    </button>
+                                </form>
                             </div>
                         </div>
                     </div>
+                </div>
+                <div th:if="${#lists.isEmpty(sensorNotifications)}">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Sensor Alerts</h3>
+                    <div class="text-center text-gray-600">
+                        <p>No sensor alerts.</p>
+                    </div>
+                </div>
+                <!-- No Notifications -->
+                <div th:if="${#lists.isEmpty(municipalityNotifications) and #lists.isEmpty(sensorNotifications)}"
+                     class="text-center text-gray-700">
+                    <p>No notifications available.</p>
                 </div>
             </main>
         </div>
     </div>
-    <script>
-        document.querySelectorAll('.mark-read').forEach(button => {
-            button.addEventListener('click', () => {
-                const notification = button.closest('.notification');
-                notification.classList.add('opacity-50');
-                button.textContent = 'Read';
-                button.disabled = true;
-                button.classList.add('bg-gray-400', 'hover:bg-gray-400', 'cursor-not-allowed');
-                button.classList.remove('bg-green-500', 'hover:bg-green-600');
-            });
-        });
-    </script>
 </body>
 </html>

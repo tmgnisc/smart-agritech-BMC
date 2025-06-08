@@ -13,8 +13,7 @@ public class Feedback {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
-    private String email; // Farmer's email
+    private String email; // Farmer's email, set programmatically
 
     @NotBlank
     private String subject;
@@ -22,7 +21,7 @@ public class Feedback {
     @NotBlank
     private String message;
 
-    private String imageBase64; // Optional image as base64
+    private String imagePath; // Path to image on server (e.g., /uploads/feedback/UUID.jpg)
 
     private LocalDateTime timestamp;
 
@@ -59,12 +58,12 @@ public class Feedback {
         this.message = message;
     }
 
-    public String getImageBase64() {
-        return imageBase64;
+    public String getImagePath() {
+        return imagePath;
     }
 
-    public void setImageBase64(String imageBase64) {
-        this.imageBase64 = imageBase64;
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 
     public LocalDateTime getTimestamp() {

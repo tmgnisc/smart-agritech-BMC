@@ -17,6 +17,7 @@ public class Profile {
     private LocalDate memberSince;
     private String address;
     private double totalArea; // in hectares
+    private String imageUrl; // Profile image URL
 
     @ElementCollection
     private List<String> mainVegetables = new ArrayList<>(); // List of vegetables
@@ -76,5 +77,13 @@ public class Profile {
 
     public void setMainVegetables(List<String> mainVegetables) {
         this.mainVegetables = mainVegetables;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }
