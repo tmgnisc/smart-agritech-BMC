@@ -1,31 +1,80 @@
 package com.example.demo.model;
 
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.validation.constraints.NotNull;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Profile {
     @Id
-    @NotNull
     private String email;
 
     private String username;
+    private String farmerId;
+    private LocalDate memberSince;
     private String address;
-    private String phoneNo;
-    private Integer wardNo;
-    private String profilePic;
+    private double totalArea; // in hectares
 
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
-    public String getUsername() { return username; }
-    public void setUsername(String username) { this.username = username; }
-    public String getAddress() { return address; }
-    public void setAddress(String address) { this.address = address; }
-    public String getPhoneNo() { return phoneNo; }
-    public void setPhoneNo(String phoneNo) { this.phoneNo = phoneNo; }
-    public Integer getWardNo() { return wardNo; }
-    public void setWardNo(Integer wardNo) { this.wardNo = wardNo; }
-    public String getProfilePic() { return profilePic; }
-    public void setProfilePic(String profilePic) { this.profilePic = profilePic; }
+    @ElementCollection
+    private List<String> mainVegetables = new ArrayList<>(); // List of vegetables
+
+    // Getters and Setters
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getFarmerId() {
+        return farmerId;
+    }
+
+    public void setFarmerId(String farmerId) {
+        this.farmerId = farmerId;
+    }
+
+    public LocalDate getMemberSince() {
+        return memberSince;
+    }
+
+    public void setMemberSince(LocalDate memberSince) {
+        this.memberSince = memberSince;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public double getTotalArea() {
+        return totalArea;
+    }
+
+    public void setTotalArea(double totalArea) {
+        this.totalArea = totalArea;
+    }
+
+    public List<String> getMainVegetables() {
+        return mainVegetables;
+    }
+
+    public void setMainVegetables(List<String> mainVegetables) {
+        this.mainVegetables = mainVegetables;
+    }
 }

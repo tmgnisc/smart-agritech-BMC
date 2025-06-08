@@ -9,4 +9,7 @@ public interface SensorDataRepository extends JpaRepository<SensorData, Long> {
     List<SensorData> findBySensorId(String sensorId);
 
 	List<SensorData> findBySensorType(String string);
+	 
+    List<SensorData> findBySensorIdOrderByTimestampDesc(String sensorId);
+	
 }
