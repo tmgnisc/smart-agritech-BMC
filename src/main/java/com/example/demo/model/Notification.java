@@ -4,27 +4,30 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import jakarta.persistence.Column;
 import java.time.LocalDateTime;
 
 @Entity
 public class Notification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     private String email; // Farmer's email
     private String type; // ANNOUNCEMENT or ALERT
     private String title;
     private String message;
     private LocalDateTime timestamp;
-    private boolean read;
+
+    @Column(name = "is_read", columnDefinition = "TINYINT(1) DEFAULT 0")
+    private boolean isRead;
 
     // Getters and Setters
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -69,10 +72,10 @@ public class Notification {
     }
 
     public boolean isRead() {
-        return read;
+        return isRead;
     }
 
-    public void setRead(boolean read) {
-        this.read = read;
+    public void setRead(boolean isRead) {
+        this.isRead = isRead;
     }
 }

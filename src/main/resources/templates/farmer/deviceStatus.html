@@ -91,9 +91,9 @@
                             <tbody class="bg-white divide-y divide-gray-200">
                                 <tr th:each="device : ${devices}">
                                     <td class="px-4 py-2 text-gray-700" th:text="${device.id}">Device ID</td>
-                                    <td class="px-4 py-2 text-gray-700" th:text="${#strings.listJoin(device.sensorIds, ', ')}">Sensor IDs</td>
+                                    <td class="px-4 py-2 text-gray-700" th:text="${device.sensorIds != null ? #strings.listJoin(device.sensorIds, ', ') : ''}">Sensor IDs</td>
                                     <td class="px-4 py-2">
-                                        <span th:classappend="${device.status == 'ACTIVE' ? 'text-green-700 bg-green-100' : ${device.status == 'INACTIVE' ? 'text-red-700 bg-red-100' : 'text-yellow-700 bg-yellow-100'}}"
+                                        <span th:classappend="${device.status == T(com.example.demo.model.Device$DeviceStatus).ACTIVE} ? 'text-green-700 bg-green-100' : (${device.status == T(com.example.demo.model.Device$DeviceStatus).INACTIVE} ? 'text-red-700 bg-red-100' : 'text-yellow-700 bg-yellow-100')"
                                               class="inline-block px-2 py-1 text-xs font-semibold rounded-full"
                                               th:text="${device.status}">Status</span>
                                     </td>

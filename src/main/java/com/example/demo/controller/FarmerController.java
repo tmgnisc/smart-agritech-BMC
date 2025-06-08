@@ -1,17 +1,7 @@
 package com.example.demo.controller;
 
-import com.example.demo.model.Feedback;
-import com.example.demo.model.Profile;
-import com.example.demo.model.Role;
-import com.example.demo.model.SensorData;
-import com.example.demo.model.User;
-import com.example.demo.model.Device;
-import com.example.demo.model.Notification;
-import com.example.demo.repository.FeedbackRepository;
-import com.example.demo.repository.ProfileRepository;
-import com.example.demo.repository.SensorDataRepository;
-import com.example.demo.repository.DeviceRepository;
-import com.example.demo.repository.NotificationRepository;
+import com.example.demo.model.*;
+import com.example.demo.repository.*;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -41,7 +32,7 @@ public class FarmerController {
 
     @Autowired
     private DeviceRepository deviceRepository;
-    
+
     @Autowired
     private NotificationRepository notificationRepository;
 
@@ -107,6 +98,9 @@ public class FarmerController {
         if (!isFarmer(session)) {
             return "redirect:/login";
         }
+        User user = (User) session.getAttribute("user");
+        Profile profile = profileRepository.findById(user.getEmail()).orElse(new Profile());
+        model.addAttribute("profile", profile);
         model.addAttribute("feedback", new Feedback());
         addSidebarAttributes(model, "feedback");
         return "farmer/feedback.html";
@@ -118,6 +112,7 @@ public class FarmerController {
             return "redirect:/login";
         }
         User user = (User) session.getAttribute("user");
+        Profile profile = profileRepository.findById(user.getEmail()).orElse(new Profile());
         feedback.setEmail(user.getEmail());
         feedback.setTimestamp(LocalDateTime.now());
         if (!file.isEmpty()) {
@@ -126,6 +121,7 @@ public class FarmerController {
             } catch (IOException e) {
                 model.addAttribute("error", "Failed to upload image");
                 model.addAttribute("feedback", feedback);
+                model.addAttribute("profile", profile);
                 addSidebarAttributes(model, "feedback");
                 return "farmer/feedback.html";
             }
@@ -133,6 +129,7 @@ public class FarmerController {
         feedbackRepository.save(feedback);
         model.addAttribute("success", "Feedback submitted successfully");
         model.addAttribute("feedback", new Feedback());
+        model.addAttribute("profile", profile);
         addSidebarAttributes(model, "feedback");
         return "farmer/feedback.html";
     }
@@ -150,6 +147,20 @@ public class FarmerController {
         model.addAttribute("notifications", notifications);
         addSidebarAttributes(model, "notifications");
         return "farmer/notifications.html";
+    }
+
+    @PostMapping("/farmer-notifications/{id}/mark-read")
+    public String markNotificationRead(@PathVariable Long id, HttpSession session) {
+        if (!isFarmer(session)) {
+            return "redirect:/login";
+        }
+        User user = (User) session.getAttribute("user");
+        Notification notification = notificationRepository.findById(id).orElse(null);
+        if (notification != null && notification.getEmail().equals(user.getEmail())) {
+            notification.setRead(true);
+            notificationRepository.save(notification);
+        }
+        return "redirect:/farmer-notifications";
     }
 
     @GetMapping("/farmer-device-status")
