@@ -5,9 +5,13 @@ import com.example.demo.model.Profile;
 import com.example.demo.model.Role;
 import com.example.demo.model.SensorData;
 import com.example.demo.model.User;
+import com.example.demo.model.Device;
+import com.example.demo.model.Notification;
 import com.example.demo.repository.FeedbackRepository;
 import com.example.demo.repository.ProfileRepository;
 import com.example.demo.repository.SensorDataRepository;
+import com.example.demo.repository.DeviceRepository;
+import com.example.demo.repository.NotificationRepository;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +39,12 @@ public class FarmerController {
     @Autowired
     private FeedbackRepository feedbackRepository;
 
+    @Autowired
+    private DeviceRepository deviceRepository;
+    
+    @Autowired
+    private NotificationRepository notificationRepository;
+
     private boolean isFarmer(HttpSession session) {
         User user = (User) session.getAttribute("user");
         return user != null && user.getRole() == Role.FARMER;
@@ -53,7 +63,6 @@ public class FarmerController {
         Profile profile = profileRepository.findById(user.getEmail()).orElse(new Profile());
         model.addAttribute("profile", profile);
 
-        // Fetch latest sensor data (placeholder: latest DHT and MQ135 data)
         List<SensorData> dhtData = sensorDataRepository.findBySensorType("DHT");
         List<SensorData> mq135Data = sensorDataRepository.findBySensorType("MQ135");
         SensorData latestDht = dhtData.isEmpty() ? null : dhtData.get(dhtData.size() - 1);
@@ -133,7 +142,65 @@ public class FarmerController {
         if (!isFarmer(session)) {
             return "redirect:/login";
         }
+        User user = (User) session.getAttribute("user");
+        Profile profile = profileRepository.findById(user.getEmail()).orElse(new Profile());
+        List<Notification> notifications = notificationRepository.findByEmailOrderByTimestampDesc(user.getEmail());
+
+        model.addAttribute("profile", profile);
+        model.addAttribute("notifications", notifications);
         addSidebarAttributes(model, "notifications");
         return "farmer/notifications.html";
+    }
+
+    @GetMapping("/farmer-device-status")
+    public String farmerDeviceStatus(Model model, HttpSession session) {
+        if (!isFarmer(session)) {
+            return "redirect:/login";
+        }
+        User user = (User) session.getAttribute("user");
+        Profile profile = profileRepository.findById(user.getEmail()).orElse(new Profile());
+        List<Device> devices = deviceRepository.findByEmail(user.getEmail());
+
+        // Update device status based on SensorData for all sensorIds
+        LocalDateTime now = LocalDateTime.now();
+        for (Device device : devices) {
+            boolean allActive = true;
+            boolean anyMaintenance = false;
+            for (String sensorId : device.getSensorIds()) {
+                List<SensorData> sensorDataList = sensorDataRepository.findBySensorIdOrderByTimestampDesc(sensorId);
+                if (sensorDataList.isEmpty()) {
+                    anyMaintenance = true;
+                    allActive = false;
+                } else {
+                    SensorData latestData = sensorDataList.get(0);
+                    if (latestData.getTimestamp().isBefore(now.minusHours(24))) {
+                        anyMaintenance = true;
+                        allActive = false;
+                    } else if (latestData.getTimestamp().isBefore(now.minusHours(1))) {
+                        allActive = false;
+                    }
+                }
+            }
+            if (anyMaintenance) {
+                device.setStatus(Device.DeviceStatus.MAINTENANCE);
+            } else if (!allActive) {
+                device.setStatus(Device.DeviceStatus.INACTIVE);
+            } else {
+                device.setStatus(Device.DeviceStatus.ACTIVE);
+            }
+            deviceRepository.save(device);
+        }
+
+        long totalDevices = devices.size();
+        long activeDevices = devices.stream().filter(d -> d.getStatus() == Device.DeviceStatus.ACTIVE).count();
+        long maintenanceRequired = devices.stream().filter(d -> d.getStatus() == Device.DeviceStatus.MAINTENANCE).count();
+
+        model.addAttribute("profile", profile);
+        model.addAttribute("devices", devices);
+        model.addAttribute("totalDevices", totalDevices);
+        model.addAttribute("activeDevices", activeDevices);
+        model.addAttribute("maintenanceRequired", maintenanceRequired);
+        addSidebarAttributes(model, "deviceStatus");
+        return "farmer/deviceStatus.html";
     }
 }
