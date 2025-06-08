@@ -19,13 +19,13 @@
                 <p class="text-sm text-green-200">SuperAdmin Portal</p>
             </div>
             <nav class="mt-8">
-                <a href="#" class="block py-2.5 px-4 rounded transition duration-200 bg-green-700">
+                <a href="superadmin-dashboard.html" class="block py-2.5 px-4 rounded transition duration-200 bg-green-700">
                     <i class="fas fa-chart-line mr-2"></i>Dashboard
                 </a>
-                <a href="#" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-green-700">
+                <a href="manageMunicipality.html" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-green-700">
                     <i class="fas fa-city mr-2"></i>Manage Municipalities
                 </a>
-                <a href="#" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-green-700">
+                <a href="viewdata.html" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-green-700">
                     <i class="fas fa-database mr-2"></i>View All Data
                 </a>
                 <a href="#" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-green-700">
@@ -148,8 +148,25 @@
             </main>
         </div>
     </div>
-    <script src="./assests/script.js"></script>
+    <script>
+               const map = L.map('map').setView([37.7749, -122.4194], 10);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        const sampleLocations = [
+            { lat: 37.7749, lng: -122.4194, title: 'Farm 1' },
+            { lat: 37.7833, lng: -122.4167, title: 'Farm 2' },
+            { lat: 37.7855, lng: -122.4067, title: 'Farm 3' }
+        ];
+
+        sampleLocations.forEach(loc => {
+            L.marker([loc.lat, loc.lng])
+                .bindPopup(loc.title)
+                .addTo(map);
+        });
+
+    </script>
 
 </body>
 </html> 
-
