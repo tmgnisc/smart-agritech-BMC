@@ -43,7 +43,7 @@ public class UserController {
                 session.setAttribute("user", users.get(0));
                 Role role = users.get(0).getRole();
                 if (role == Role.ADMIN) {
-                	System.out.println("admin loggd in");
+                    System.out.println("admin logged in");
                     return "redirect:/admin-dashboard";
                 } else if (role == Role.MUNICIPALITY) {
                     return "redirect:/municipality-dashboard";
@@ -144,30 +144,6 @@ public class UserController {
             model.addAttribute("error", "Email already registered");
         }
         return "municipality-dashboard.html";
-    }
-    
-    @GetMapping("/farmer-dashboard")
-    public String farmerDashboard(Model model, HttpSession session) {
-        User user = (User) session.getAttribute("user");
-        if (user == null || user.getRole() != Role.FARMER) {
-            return "redirect:/login";
-        }
-        Profile profile = profileRepository.findById(user.getEmail()).orElse(new Profile());
-        model.addAttribute("profile", profile);
-        return "farmer-dashboard.html";
-    }
-    
-    @PostMapping("/farmer/update-profile")
-    public String updateFarmerProfile(@ModelAttribute Profile profile, Model model, HttpSession session) {
-        User user = (User) session.getAttribute("user");
-        if (user == null || user.getRole() != Role.FARMER) {
-            return "redirect:/login";
-        }
-        profile.setEmail(user.getEmail());
-        profileRepository.save(profile);
-        model.addAttribute("success", "Profile updated successfully");
-        model.addAttribute("profile", profile);
-        return "farmer-dashboard.html";
     }
     
     @DeleteMapping("/user/{id}")

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,38 +10,38 @@
 </head>
 <body class="bg-gray-100">
     <div class="flex h-screen">
-
         <div class="w-64 bg-green-800 text-white">
             <div class="p-4">
                 <h1 class="text-2xl font-bold">Smart AgriTech</h1>
-                <p class="text-sm text-green-200">Farmer Dashboard</p>
+                <p class="text-sm text-green-200" th:text="${profile.username} + ' Dashboard'">Farmer Dashboard</p>
             </div>
             <nav class="mt-8">
-                <a href="#" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-green-700">
+                <a th:href="@{/farmer-dashboard}" th:classappend="${activePage == 'dashboard' ? 'bg-green-700' : ''}" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-green-700">
                     <i class="fas fa-chart-line mr-2"></i>Dashboard
                 </a>
-                <a href="notifications.html" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-green-700">
+                <a th:href="@{/farmer-notifications}" th:classappend="${activePage == 'notifications' ? 'bg-green-700' : ''}" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-green-700">
                     <i class="fas fa-bell mr-2"></i>Notifications
                 </a>
-                <a href="deviceStatus.html" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-green-700">
+                <a href="#" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-green-700">
                     <i class="fas fa-microchip mr-2"></i>Device Status
                 </a>
-                <a href="feedback.html" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-green-700">
+                <a th:href="@{/farmer-feedback}" th:classappend="${activePage == 'feedback' ? 'bg-green-700' : ''}" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-green-700">
                     <i class="fas fa-comment-alt mr-2"></i>Feedback
                 </a>
-                 <a href="farmerDetails.html" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-green-700">
-                <i class="fas fa-user mr-2"></i>Farmer Details
+                <a th:href="@{/farmer-details}" th:classappend="${activePage == 'farmerDetails' ? 'bg-green-700' : ''}" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-green-700">
+                    <i class="fas fa-user mr-2"></i>Farmer Details
                 </a>
-
+                <a th:href="@{/logout}" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-red-700">
+                    <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                </a>
             </nav>
         </div>
-          <div class="flex-1 overflow-auto">
+        <div class="flex-1 overflow-auto">
             <header class="bg-white shadow">
                 <div class="px-4 py-6">
                     <h2 class="text-xl font-semibold text-gray-800">Dashboard Overview</h2>
                 </div>
             </header>
-
             <main class="p-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
                     <div class="bg-white rounded-lg shadow p-6">
@@ -51,7 +51,7 @@
                             </div>
                             <div class="ml-4">
                                 <h3 class="text-gray-500 text-sm">Temperature</h3>
-                                <p class="text-2xl font-semibold">28°C</p>
+                                <p class="text-2xl font-semibold" th:text="${temperature} + '°C'">28°C</p>
                             </div>
                         </div>
                     </div>
@@ -62,7 +62,7 @@
                             </div>
                             <div class="ml-4">
                                 <h3 class="text-gray-500 text-sm">Humidity</h3>
-                                <p class="text-2xl font-semibold">65%</p>
+                                <p class="text-2xl font-semibold" th:text="${humidity} + '%'">65%</p>
                             </div>
                         </div>
                     </div>
@@ -73,7 +73,7 @@
                             </div>
                             <div class="ml-4">
                                 <h3 class="text-gray-500 text-sm">Air Quality</h3>
-                                <p class="text-2xl font-semibold">Good</p>
+                                <p class="text-2xl font-semibold" th:text="${airQuality}">Good</p>
                             </div>
                         </div>
                     </div>
@@ -89,7 +89,7 @@
                         </div>
                     </div>
                 </div>
-                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <div class="bg-white rounded-lg shadow p-6">
                         <h3 class="text-lg font-semibold mb-4">Temperature & Humidity</h3>
                         <canvas id="tempHumidityChart"></canvas>
@@ -97,11 +97,10 @@
                     <div class="bg-white rounded-lg shadow p-6">
                         <h3 class="text-lg font-semibold mb-4">Soil Moisture Trend</h3>
                         <canvas id="soilMoistureChart"></canvas>
-                        </div>
-                             </div>
-                             </main>
-                         </div>
-                     </div>
-          
- </body>
-</html> 
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+</body>
+</html>
