@@ -102,3 +102,54 @@
                              </main>
                          </div>
                      </div>
+            <script>
+                const tempHumidityCtx = document.getElementById('tempHumidityChart').getContext('2d');
+                new Chart(tempHumidityCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['6AM', '9AM', '12PM', '3PM', '6PM', '9PM'],
+                        datasets: [{
+                            label: 'Temperature (°C)',
+                            data: [25, 27, 30, 29, 28, 26],
+                            borderColor: 'rgb(34, 197, 94)',
+                            tension: 0.1
+                        }, {
+                            label: 'Humidity (%)',
+                            data: [60, 58, 55, 57, 62, 65],
+                            borderColor: 'rgb(59, 130, 246)',
+                            tension: 0.1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: false
+                            }
+                        }
+                    }
+                });
+                    const soilMoistureCtx = document.getElementById('soilMoistureChart').getContext('2d');
+                        new Chart(soilMoistureCtx, {
+                            type: 'bar',
+                            data: {
+                                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                                datasets: [{
+                                    label: 'Soil Moisture (%)',
+                                    data: [45, 42, 40, 38, 42, 45, 43],
+                                    backgroundColor: 'rgb(168, 85, 247)'
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        max: 100
+                                    }
+                                }
+                            }
+                        });
+            </script>
+ </body>
+</html> 
