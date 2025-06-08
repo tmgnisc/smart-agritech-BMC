@@ -25,7 +25,7 @@ public class DataInitializer implements CommandLineRunner {
         // Check if admin exists, create if not
         if (userRepository.findByEmail("admin@gmail.com").isEmpty()) {
             User admin = new User();
-            admin.setEmail("admin@example.com");
+            admin.setEmail("admin@gmail.com");
             admin.setPassword(DigestUtils.sha256Hex("admin@gmail.com" + "admin123"));
             admin.setRole(Role.ADMIN);
             userRepository.save(admin);
@@ -36,6 +36,4 @@ public class DataInitializer implements CommandLineRunner {
             profileRepository.save(adminProfile);
         }
     }
-    
-   
 }

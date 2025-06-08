@@ -31,6 +31,7 @@ public class UserController {
     @GetMapping("/login")
     public String showLoginForm(Model model) {
         model.addAttribute("user", new User());
+        model.addAttribute("roles", Role.values());
         return "login.html";
     }
     
@@ -38,18 +39,28 @@ public class UserController {
     public String loginUser(@ModelAttribute User user, Model model, HttpSession session) {
         List<User> users = userRepository.findByEmail(user.getEmail());
         if (!users.isEmpty() && users.get(0).getPassword().equals(DigestUtils.sha256Hex(user.getEmail() + user.getPassword()))) {
-            session.setAttribute("user", users.get(0));
-            Role role = users.get(0).getRole();
-            if (role == Role.ADMIN) {
-                return "redirect:/admin-dashboard";
-            } else if (role == Role.MUNICIPALITY) {
-                return "redirect:/municipality-dashboard";
-            } else if (role == Role.FARMER) {
-                return "redirect:/farmer-dashboard";
+            if (users.get(0).getRole() == user.getRole()) {
+                session.setAttribute("user", users.get(0));
+                Role role = users.get(0).getRole();
+                if (role == Role.ADMIN) {
+                	System.out.println("admin loggd in");
+                    return "redirect:/admin-dashboard";
+                } else if (role == Role.MUNICIPALITY) {
+                    return "redirect:/municipality-dashboard";
+                } else if (role == Role.FARMER) {
+                    return "redirect:/farmer-dashboard";
+                }
             }
         }
-        model.addAttribute("error", "Invalid email or password");
+        model.addAttribute("error", "Invalid email, password, or role");
+        model.addAttribute("roles", Role.values());
         return "login.html";
+    }
+    
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
+        return "redirect:/login";
     }
     
     @GetMapping("/register")
@@ -70,6 +81,7 @@ public class UserController {
             return "redirect:/login";
         } else {
             model.addAttribute("error", "Email already registered");
+            model.addAttribute("roles", Role.values());
             return "register.html";
         }
     }
