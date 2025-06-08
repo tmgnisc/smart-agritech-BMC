@@ -1,3 +1,4 @@
+//for farmer-dashboard
 const tempHumidityCtx = document.getElementById('tempHumidityChart').getContext('2d');
 const tempHumidityChart = new Chart(tempHumidityCtx, {
     type: 'line',
@@ -65,9 +66,26 @@ const soilMoistureChart = new Chart(soilMoistureCtx, {
         }
     }
 });
-  
+//for farmer's details
     function toggleProperties() {
       const section = document.getElementById("propertySection");
       section.classList.toggle("hidden");
     }
- 
+    //for superadmin-dashboard
+
+        const map = L.map('map').setView([37.7749, -122.4194], 10);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        const sampleLocations = [
+            { lat: 37.7749, lng: -122.4194, title: 'Farm 1' },
+            { lat: 37.7833, lng: -122.4167, title: 'Farm 2' },
+            { lat: 37.7855, lng: -122.4067, title: 'Farm 3' }
+        ];
+
+        sampleLocations.forEach(loc => {
+            L.marker([loc.lat, loc.lng])
+                .bindPopup(loc.title)
+                .addTo(map);
+        });
